@@ -18,6 +18,36 @@ app.post("/signup" , async (req, res) => {
     }
 });
 
+// Get user by emailId
+app.get("/user", async (req, res) => {
+    const userEmail = req.body.emailId;
+    try{
+        const users = await User.findOne({emailId:userEmail});
+        res.send(users);
+        // if(users.length === 0){
+        //     res.status(404).send("user not find");
+        // }else{
+        //     res.send(users);
+        // }
+    }catch(err){
+        res.status(400).send("something went wrong");
+    }
+});
+
+//Update data of the user 
+app.patch("/user", async(req, res) => {
+    const userId = req.body.userId;
+    const data = req.body;
+    try{
+        const user = await User.findByIdAndUpdate({ _id: userId}, data , {runValidators: true});
+        res.send("User Update Successfuly!");
+    
+    }catch(err){
+        res.status(400).send("something went wrong");
+    }
+});
+
+
 connectDB()
     .then(() => {
         console.log("Database Connection is established!");
