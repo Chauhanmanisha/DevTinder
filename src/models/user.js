@@ -4,7 +4,6 @@ const validator = require("validator");
 const userSchema = new mongoose.Schema({
     firstName:{
         type: String,
-        minLength:4,
         maxLength:50,
         required:true,
     },
@@ -23,9 +22,7 @@ const userSchema = new mongoose.Schema({
     password:{
         type: String,
         required:true,
-        lowercase:true,
         unique:true,
-        trim:true,
     },
     age:{
         type: String,

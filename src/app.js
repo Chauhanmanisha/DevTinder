@@ -17,7 +17,6 @@ app.post("/signup" , async (req, res) => {
         
         // encrypt the password 
         const passwordHash = await bcrypt.hash(password , 10);
-        console.log(passwordHash);
 
         //Creating a new Instance of the user Model
         const user = new User({
@@ -28,11 +27,36 @@ app.post("/signup" , async (req, res) => {
         });
 
         await user.save();
+        console.log("DBPassword=",user.password);
         res.send("User added Successfuly");
     }catch(err){
         res.status(400).send("  ERRO:" + err.message);
     }
 });
+
+app.post("/login", async(req , res) => {
+    try{
+        const {emailId , password} = req.body;
+        
+        const user = await User.findOne({emailId : emailId});
+        if(!user){
+            throw new Error("EmailId is not presetn in DB!");
+        }
+        
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+
+        if(isPasswordValid){
+            res.send("Login Successfully!");
+        }
+        else{
+            throw new Error("Password is not correct!");
+        }
+    }catch(err){
+        res.status(400).send("  ERRO:" + err.message);
+    }
+    
+});
+
 
 // Get user by emailId
 app.get("/user", async (req, res) => {
