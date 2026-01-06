@@ -44,6 +44,10 @@ const userSchema = new mongoose.Schema({
     skills: {
         type : [String],
     },
+    photoUrl:{
+        type: String,
+        default: "https://avatar.iran.liara.run/public/boy?variant=beanie"
+    },
 
  },{timestamps:true});
 

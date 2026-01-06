@@ -5,7 +5,7 @@ const{userAuth} = require("../middlewares/auth");
 const ConnectionRequest = require("../models/connectionRequest");
 const User = require("../models/user");
 
-const USER_SAFE_DATA = "firstName lastName age gender skills";
+const USER_SAFE_DATA = "firstName lastName age gender skills about photoUrl";
 //Get all the pending connection request for the loggedIn user
 userRouter.get("/user/requests/received", userAuth, async(req, res) => {
     try{
@@ -65,13 +65,13 @@ userRouter.get("/feed", userAuth, async(req, res) => {
 
         const connectionRequests = await ConnectionRequest.find({
             $or: [{fromUserId: loggedInUser._id} , {toUserId: loggedInUser._id}],
-        }).select(USER_SAFE_DATA);
+        }).select("fromUserId toUserId");
 
 
         const hideUserFromFeed = new Set();
         connectionRequests.forEach((req) => {
-            hideUserFromFeed.add(req.fromUserId.toString());
-            hideUserFromFeed.add(req.toUserId.toString());
+           if (req.fromUserId)hideUserFromFeed.add(req.fromUserId.toString());
+           if (req.toUserId)hideUserFromFeed.add(req.toUserId.toString());
         });
 
         const users = await User.find({

@@ -3,6 +3,9 @@ const { model } = require("mongoose");
 const User = require("../models/user");
 
 const userAuth = async (req, res, next) => {
+    if (req.method === "OPTIONS") {
+        return next(); 
+    }
     try{
         const {token} = req.cookies;
         if(!token){
@@ -21,7 +24,7 @@ const userAuth = async (req, res, next) => {
         req.user = user;
         next();
    }catch(err){
-    res.status(400).send("  ERROR:" + err.message);
+    return res.status(401).json({ message: "Invalid or expired token" });
    }
 };
 
